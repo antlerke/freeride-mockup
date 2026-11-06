@@ -81,7 +81,26 @@
       } else {
         p = (vh - r.top) / (vh + r.height);
       }
-      t.style.setProperty('--p', clamp(p).toFixed(4));
+      p = clamp(p);
+      t.style.setProperty('--p', p.toFixed(4));
+
+      /* У блоці вправ грає лише той ролик, який зараз видно */
+      if (t.__vids === undefined) t.__vids = t.querySelectorAll('.pin-video video');
+      if (t.__vids.length) {
+        var idx = p < 0.25 ? 0 : p < 0.51 ? 1 : p < 0.77 ? 2 : 3;
+        if (t.__idx !== idx) {
+          t.__idx = idx;
+          for (var k = 0; k < t.__vids.length; k++) {
+            var v = t.__vids[k];
+            if (k === idx) {
+              var play = v.play();
+              if (play && play.catch) play.catch(function () {});
+            } else if (!v.paused) {
+              v.pause();
+            }
+          }
+        }
+      }
     }
   }
 

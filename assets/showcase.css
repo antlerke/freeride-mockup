@@ -108,6 +108,21 @@ body.showcase .nav a:hover { color: var(--go); }
 .pin-step p { margin: 0; font-size: 16px; line-height: 1.6; color: #B9C0C6; max-width: 26em; }
 
 .pin-figure { flex: 1 1 460px; min-width: 0; }
+.pin-video {
+  position: relative; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden;
+  background: #0E1113; border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.pin-video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pin-video::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(14, 17, 19, 0.6), transparent 42%);
+}
+.vid-note {
+  position: absolute; left: 12px; bottom: 12px; z-index: 2; margin: 0;
+  font-size: 11px; line-height: 1.4; color: rgba(255, 255, 255, 0.62);
+  background: rgba(14, 17, 19, 0.7); border: 1px dashed rgba(255, 255, 255, 0.22);
+  padding: 6px 10px; border-radius: 4px;
+}
 .ground { width: 100%; height: auto; display: block; }
 .ground .lane { stroke: #3A4147; stroke-width: 2; stroke-dasharray: 11 9; fill: none; }
 .ground .path {
