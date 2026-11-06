@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Вигляд на телефоні — FreeRide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .frame { width: 390px; height: 780px; border: 10px solid #2E3338; border-radius: 28px; overflow: hidden; background: #FFF; box-shadow: 0 18px 50px rgba(21, 24, 27, 0.16); }
+  .frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  @media (max-width: 520px) { .frame { width: 100%; height: 70vh; border-width: 6px; border-radius: 18px; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="home.html"><b>FreeRide</b><span>мотошкола</span></a>
+    <nav class="nav"><a href="home.html">Головна</a><a href="instructors.html">Інструктори</a><a href="system.html">Дизайн-система</a></nav>
+    <a class="btn btn-ghost btn-sm" href="index.html">Усі екрани</a>
+  </div>
+</header>
+
+<section class="wrap" style="padding-top: 44px; padding-bottom: 28px">
+  <h1 style="font-size: 38px">Вигляд на телефоні</h1>
+  <p class="lede">Це та сама сторінка, що й на компʼютері — просто вужча. Окремої мобільної версії не буде: верстка одна, вона перебудовується під ширину екрана.</p>
+  <div class="demo" style="max-width: 560px">
+    <span>Показати в рамці:</span>
+    <button type="button" data-src="home.html" aria-pressed="true">Головна</button>
+    <button type="button" data-src="instructors.html" aria-pressed="false">Інструктори</button>
+    <button type="button" data-src="course.html" aria-pressed="false">Курс</button>
+    <button type="button" data-src="contacts.html" aria-pressed="false">Контакти</button>
+  </div>
+</section>
+
+<section class="wrap" style="padding-bottom: 60px; display: flex; justify-content: center">
+  <div class="frame">
+    <iframe id="ph" src="home.html" title="Макет FreeRide на ширині телефона"></iframe>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap ft" style="align-items: baseline; gap: 32px; padding-top: 36px; padding-bottom: 36px">
+    <span style="font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 20px; color: #FFF; flex-grow: 1">FreeRide</span>
+    <a href="index.html" style="font-size: 14px; text-decoration: underline">← усі екрани макета</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var frame = document.getElementById('ph');
+  var btns = document.querySelectorAll('[data-src]');
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      frame.src = b.dataset.src;
+      btns.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
