@@ -1,0 +1,216 @@
+/* FreeRide — іміджева головна. Скрол-режисура. */
+
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+body.showcase { background: #15181B; color: #FFFFFF; }
+body.showcase .bar {
+  background: rgba(21, 24, 27, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+body.showcase .brand { color: #FFFFFF; }
+body.showcase .brand span { color: #9AA2A8; }
+body.showcase .nav a { color: #FFFFFF; }
+body.showcase .nav a:hover { color: var(--go); }
+
+/* ── Герой: POV ───────────────────────────────────────────── */
+.hero-wrap { position: relative; height: 100vh; min-height: 560px; overflow: hidden; }
+.hero-media {
+  position: absolute; inset: 0;
+  transform: scale(calc(1 - var(--p) * 0.1));
+  filter: brightness(calc(1 - var(--p) * 0.55));
+  will-change: transform, filter;
+}
+.hero-media video, .hero-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Заглушка замість відео: дорога, що біжить назустріч */
+.road { position: absolute; inset: 0; background: #0E1113; overflow: hidden; perspective: 240px; perspective-origin: 50% 0%; }
+.road-plane {
+  position: absolute; left: -100%; right: -100%; bottom: 0;
+  height: 200%;
+  transform-origin: 50% 100%;
+  transform: rotateX(62deg);
+  background-color: #1A1F22;
+  background-image:
+    repeating-linear-gradient(to bottom, rgba(224, 162, 34, 0.95) 0 70px, rgba(224, 162, 34, 0) 70px 190px),
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 0 4px, rgba(255, 255, 255, 0) 4px 190px);
+  background-size: 22px 190px, 100% 190px;
+  background-position: 50% 0, 0 0;
+  background-repeat: repeat-y, repeat-y;
+  animation: road-run 1.2s linear infinite;
+}
+@keyframes road-run { to { background-position: 50% 190px, 0 190px; } }
+.road::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(130% 80% at 50% 36%, rgba(80, 110, 130, 0.22), transparent 60%),
+    linear-gradient(to bottom, rgba(14, 17, 19, 0.92) 0%, rgba(14, 17, 19, 0.15) 32%, rgba(14, 17, 19, 0.55) 72%, rgba(14, 17, 19, 0.95) 100%);
+}
+.road-note {
+  position: absolute; left: 50%; top: 14%; transform: translateX(-50%);
+  text-align: center; font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.5);
+  border: 1px dashed rgba(255, 255, 255, 0.28); border-radius: 4px; padding: 10px 16px;
+  max-width: 420px;
+}
+
+.hero-copy {
+  position: relative; z-index: 2; height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding-bottom: 92px;
+  transform: translateY(calc(var(--p) * -70px));
+  opacity: calc(1 - var(--p) * 1.5);
+  will-change: transform, opacity;
+}
+.hero-h1 {
+  font-family: 'Unbounded', 'Manrope', sans-serif; font-weight: 600;
+  font-size: clamp(34px, 6.2vw, 82px); line-height: 0.98; letter-spacing: -0.035em;
+  margin: 0 0 20px; color: #FFFFFF; max-width: 14em;
+}
+.hero-sub { font-size: clamp(16px, 1.5vw, 20px); line-height: 1.5; color: #C6CDD2; max-width: 32em; margin: 0 0 28px; }
+
+.scroll-hint {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-size: 12px; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.6);
+  transition: opacity 400ms ease;
+}
+.scroll-hint.gone { opacity: 0; }
+.scroll-hint i { display: block; width: 1px; height: 34px; background: linear-gradient(to bottom, transparent, var(--go)); animation: hint 1.6s ease-in-out infinite; }
+@keyframes hint { 0%, 100% { transform: scaleY(0.4); opacity: 0.4 } 50% { transform: scaleY(1); opacity: 1 } }
+
+/* ── Велика заява ─────────────────────────────────────────── */
+.statement { padding: 18vh 0; }
+.statement p {
+  font-family: 'Unbounded', 'Manrope', sans-serif; font-weight: 500;
+  font-size: clamp(24px, 3.4vw, 46px); line-height: 1.22; letter-spacing: -0.028em;
+  margin: 0; max-width: 20em; color: #FFFFFF;
+}
+.statement .line { display: block; opacity: 0; transform: translateY(26px); transition: opacity 700ms cubic-bezier(0.2, 0, 0, 1), transform 700ms cubic-bezier(0.2, 0, 0, 1); }
+.statement.in .line { opacity: 1; transform: none; }
+.statement.in .line:nth-child(2) { transition-delay: 110ms }
+.statement.in .line:nth-child(3) { transition-delay: 220ms }
+.statement.in .line:nth-child(4) { transition-delay: 330ms }
+.statement em { font-style: normal; color: var(--go); }
+
+/* ── Закріплена секція вправ ──────────────────────────────── */
+.pin { height: 420vh; position: relative; }
+.pin-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; overflow: hidden; }
+.pin-inner { width: 100%; display: flex; flex-wrap: wrap; gap: 48px; align-items: center; }
+.pin-text { flex: 1 1 320px; min-width: 0; }
+.pin-kicker { font-size: 13px; letter-spacing: 0.1em; color: var(--go); margin: 0 0 14px; }
+.pin-title { font-family: 'Unbounded', sans-serif; font-weight: 600; font-size: clamp(26px, 3.2vw, 42px); line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 16px; color: #FFF; }
+.pin-steps { position: relative; min-height: 150px; }
+.pin-step { position: absolute; inset: 0; opacity: 0; }
+.pin-step.s1 { opacity: clamp(0, calc((0.26 - var(--p)) * 18), 1); }
+.pin-step.s2 { opacity: clamp(0, min(calc((var(--p) - 0.24) * 18), calc((0.52 - var(--p)) * 18)), 1); }
+.pin-step.s3 { opacity: clamp(0, min(calc((var(--p) - 0.50) * 18), calc((0.78 - var(--p)) * 18)), 1); }
+.pin-step.s4 { opacity: clamp(0, calc((var(--p) - 0.76) * 18), 1); }
+.pin-step h3 { font-family: 'Manrope', sans-serif; font-weight: 700; letter-spacing: 0; font-size: 22px; margin: 0 0 8px; color: #FFF; }
+.pin-step p { margin: 0; font-size: 16px; line-height: 1.6; color: #B9C0C6; max-width: 26em; }
+
+.pin-figure { flex: 1 1 460px; min-width: 0; }
+.ground { width: 100%; height: auto; display: block; }
+.ground .lane { stroke: #3A4147; stroke-width: 2; stroke-dasharray: 11 9; fill: none; }
+.ground .path {
+  fill: none; stroke: var(--go); stroke-width: 4; stroke-linecap: round;
+  stroke-dasharray: 1000; stroke-dashoffset: 1000;
+}
+.ground .mark { fill: var(--mark); opacity: 0; }
+.ground .lbl { fill: #7D858C; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; opacity: 0; }
+
+/* Кожна вправа проявляється й малюється у своєму вікні прогресу */
+.ex-g1 { opacity: clamp(0, calc((0.27 - var(--p)) * 16), 1); }
+.ex-g2 { opacity: clamp(0, min(calc((var(--p) - 0.23) * 16), calc((0.53 - var(--p)) * 16)), 1); }
+.ex-g3 { opacity: clamp(0, min(calc((var(--p) - 0.49) * 16), calc((0.79 - var(--p)) * 16)), 1); }
+.ex-g4 { opacity: clamp(0, calc((var(--p) - 0.75) * 16), 1); }
+
+.ex-g1 .path { stroke-dashoffset: calc((1 - clamp(0, calc((var(--p) - 0.02) / 0.20), 1)) * 1000px); }
+.ex-g2 .path { stroke-dashoffset: calc((1 - clamp(0, calc((var(--p) - 0.28) / 0.20), 1)) * 1000px); }
+.ex-g3 .path { stroke-dashoffset: calc((1 - clamp(0, calc((var(--p) - 0.54) / 0.20), 1)) * 1000px); }
+.ex-g4 .path { stroke-dashoffset: calc((1 - clamp(0, calc((var(--p) - 0.79) / 0.18), 1)) * 1000px); }
+
+.ex-g1 .lbl { opacity: clamp(0, calc((var(--p) - 0.02) * 24), 1); }
+.ex-g2 .lbl { opacity: clamp(0, calc((var(--p) - 0.28) * 24), 1); }
+.ex-g3 .lbl { opacity: clamp(0, calc((var(--p) - 0.54) * 24), 1); }
+.ex-g4 .lbl { opacity: clamp(0, calc((var(--p) - 0.79) * 24), 1); }
+
+.ex-g1 .mark { opacity: clamp(0, calc((var(--p) - 0.12) * 14), 1); }
+.ex-g3 .mark { opacity: clamp(0, calc((var(--p) - 0.66) * 14), 1); }
+.ex-g4 .mark { opacity: clamp(0, calc((var(--p) - 0.90) * 14), 1); }
+
+.pin-bar { margin-top: 26px; height: 3px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; overflow: hidden; }
+.pin-bar i { display: block; height: 100%; width: calc(var(--p) * 100%); background: var(--go); }
+
+/* ── Траєкторія крізь сторінку ────────────────────────────── */
+.thread { position: relative; padding: 14vh 0; }
+.thread svg { width: 100%; height: 150px; display: block; overflow: visible; }
+.thread .wire { fill: none; stroke: var(--go); stroke-width: 3; stroke-dasharray: 2000; stroke-dashoffset: calc((1 - var(--p)) * 2000px); }
+.thread .ghost { fill: none; stroke: rgba(255, 255, 255, 0.1); stroke-width: 3; }
+
+/* ── Цифри ────────────────────────────────────────────────── */
+.nums { padding: 10vh 0; }
+.num { opacity: 0; transform: translateY(22px); transition: opacity 600ms ease, transform 600ms cubic-bezier(0.2, 0, 0, 1); }
+.nums.in .num { opacity: 1; transform: none; }
+.nums.in .num:nth-child(2) { transition-delay: 90ms }
+.nums.in .num:nth-child(3) { transition-delay: 180ms }
+.nums.in .num:nth-child(4) { transition-delay: 270ms }
+.num b { display: block; font-family: 'Unbounded', sans-serif; font-weight: 600; font-size: clamp(30px, 4vw, 54px); line-height: 1; letter-spacing: -0.03em; color: var(--go); margin-bottom: 12px; }
+.num span { font-size: 15px; line-height: 1.5; color: #B9C0C6; }
+
+/* ── Мотопарк, що їде вбік ────────────────────────────────── */
+.rail { height: 300vh; position: relative; }
+.rail-stage { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.rail-track { display: flex; gap: 24px; padding: 0 40px; transform: translateX(calc(var(--p) * -62%)); will-change: transform; }
+.rail-card { flex: 0 0 340px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 4px; overflow: hidden; background: #1C2124; }
+.rail-ph { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; background: #22282B; color: #7D858C; font-size: 13px; }
+.rail-card div.meta { padding: 18px 20px; }
+.rail-card strong { display: block; font-size: 17px; margin-bottom: 4px; color: #FFF; }
+.rail-card span { font-size: 14px; color: #9AA2A8; }
+
+/* ── Команда ──────────────────────────────────────────────── */
+.team-grid .tcard { opacity: 0; transform: translateY(26px); transition: opacity 650ms ease, transform 650ms cubic-bezier(0.2, 0, 0, 1); }
+.team-grid.in .tcard { opacity: 1; transform: none; }
+.team-grid.in .tcard:nth-child(2) { transition-delay: 100ms }
+.team-grid.in .tcard:nth-child(3) { transition-delay: 200ms }
+.team-grid.in .tcard:nth-child(4) { transition-delay: 300ms }
+.tcard { border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 4px; padding: 22px; background: #1C2124; }
+.tcard .ph { width: 100%; aspect-ratio: 1; border-radius: 50%; max-width: 110px; background: #22282B; display: flex; align-items: center; justify-content: center; color: #7D858C; font-size: 12px; margin-bottom: 16px; }
+
+/* ── Ціни на темному ──────────────────────────────────────── */
+.price-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.price-row strong { font-size: 18px; color: #FFF; }
+.price-row .desc { flex: 2 1 320px; font-size: 15px; color: #9AA2A8; }
+
+/* ── Фінал ────────────────────────────────────────────────── */
+.finale { padding: 16vh 0; text-align: center; }
+.finale h2 { font-size: clamp(30px, 5vw, 62px); line-height: 1.04; letter-spacing: -0.035em; color: #FFF; margin: 0 auto 22px; max-width: 15em; }
+
+body.showcase .rule { background: repeating-linear-gradient(to right, rgba(255, 255, 255, 0.18) 0 18px, transparent 18px 32px); }
+body.showcase footer.site { background: #0E1113; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+
+@media (max-width: 760px) {
+  .pin { height: 360vh; }
+  .rail { height: 260vh; }
+  .rail-card { flex-basis: 260px; }
+  .rail-track { transform: translateX(calc(var(--p) * -72%)); }
+  .hero-copy { padding-bottom: 72px; }
+  .statement { padding: 12vh 0; }
+}
+
+/* ── Без зайвого руху ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hero-media { transform: none; filter: none; }
+  .hero-copy { transform: none; opacity: 1; }
+  .road-plane { animation: none; }
+  .scroll-hint i { animation: none; }
+  .statement .line, .num, .team-grid .tcard { opacity: 1; transform: none; transition: none; }
+  .pin { height: auto; }
+  .pin-stage { position: static; height: auto; padding: 8vh 0; }
+  .pin-steps { min-height: 0; }
+  .pin-step { position: static; opacity: 1; transform: none; margin-bottom: 22px; }
+  .ground .path { stroke-dashoffset: 0; }
+  .ground .mark, .ground .lbl { opacity: 1; }
+  .thread .wire { stroke-dashoffset: 0; }
+  .rail { height: auto; }
+  .rail-stage { position: static; height: auto; padding: 6vh 0; }
+  .rail-track { transform: none; overflow-x: auto; padding-bottom: 12px; }
+}
